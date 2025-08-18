@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="app.js"></script>
+</head>
+<body>
+    <h1>JEOPARDY!</h1> <!-- Add the Jeopardy logo here instead as an image eventually-->
+    <header>
+        <p id="question-display">Question</p>
+        <p id="answer-display">Answer</p>
+
+        <div class="user-answer">
+        <input id="answer-input-button">
+        <button id="submit-answer">Submit Answer!</button>
+        </div>
+
+    </header>
+
+    <section class="Column"> 
+        <div class="category" id="Category1">SNL Celebrity Jeopardy!</div>
+        <div class="question" id="column1-question1">$100</div>
+        <div class="question" id="column1-question2">$200</div>
+        <div class="question" id="column1-question3">$300</div>
+        <div class="question" id="column1-question4">$400</div>
+        <div class="question" id="column1-question5">$500</div>
+    </section>
+
+    <div class="score">
+    <h3>$</h3>
+    <h3 id = "score-display">0</h3>
+    </div>
+
+    <footer>
+    <button id="reset">Start over!</button> 
+    </footer>
+</body>
+</html>
