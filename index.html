@@ -10,24 +10,34 @@
 <body>
     <h1>JEOPARDY!</h1> <!-- Add the Jeopardy logo here instead as an image eventually-->
     <header>
-        <p id="question-display">Question</p>
-        <p id="answer-display">Answer</p>
+        <p id="question-display">Welcome to Jeopardy!</p>
+        <p id="answer-display">Start the game by clicking a question value below!</p>
 
         <div class="user-answer">
-        <input id="answer-input-button">
-        <button id="submit-answer">Submit Answer!</button>
+        <input id="answer-input"> <!--add some like preview text in the input "dont forget the ?"-->
+        <button id="submit-answer-button">Submit Answer!</button>
         </div>
 
     </header>
 
-    <section class="Column"> 
-        <div class="category" id="Category1">SNL Celebrity Jeopardy!</div>
+    <div class = "category-columns">
+    <section class="column"> 
+        <div class="category" id="category1">TEST</div>
         <div class="question" id="column1-question1">$100</div>
         <div class="question" id="column1-question2">$200</div>
         <div class="question" id="column1-question3">$300</div>
         <div class="question" id="column1-question4">$400</div>
         <div class="question" id="column1-question5">$500</div>
     </section>
+    <section class="column">
+        <div class="category" id="category2">TEST</div>
+        <div class="question" id="column2-question1">$100</div>
+        <div class="question" id="column2-question2">$200</div>
+        <div class="question" id="column2-question3">$300</div>
+        <div class="question" id="column2-question4">$400</div>
+        <div class="question" id="column2-question5">$500</div>
+    </section>
+    </div>
 
     <div class="score">
     <h3>$</h3>

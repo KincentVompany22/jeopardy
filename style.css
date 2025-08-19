@@ -25,7 +25,7 @@ header p {
     justify-content: center;
 }
 
-input, #submit-answer {
+input, #submit-answer-button {
     margin: 20px;
     font-size: 25px;
 }
@@ -35,7 +35,14 @@ input, #submit-answer {
     height: 20px;
 }
 
-.Column {
+.category-columns {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.column {
     display: flex;
     flex-direction: column;
     height: 400px;
@@ -43,17 +50,20 @@ input, #submit-answer {
     align-items: center;
 }
 
-#Category1{
-    color: white;
-}
-
-.question {
+.category, .question {
     background-color: #060CE9;
     color: #ffcc00;
     font-size: 50px;
     width: 200px;
+    height: 60px;
     text-align: center;
     border: 2px solid white;
+}
+
+.category {
+    color: white;
+    font-size: 25px;
+    text-align: center;
 }
 
 .score {
