@@ -19,9 +19,6 @@ User Story / Pseudo Code:
     - Make just answered question unclickable.
     - Until next question is clicked, the previous question, answer, and inputted answer remain on screen
         - Done so through the clear() function
-
-
-
 - Once all questions are answered (questionDirectory.clicked = true for all questions) then analyze current score
     - Use the every() method to indentify that every questionDirectory.clicked = true
     - If current score is positive - user wins!
@@ -29,24 +26,29 @@ User Story / Pseudo Code:
         - Might need to store textContent for board in an array (like TicTacToe)
 - User can play again by clicking Start Over Button (id reset)
     - Runs init function to reset board, return all textContent to board
+    - since questionEls is a nodelist, cannot extract textContent
+        - Have to run a forEach to look for textContent for each element and return it to a new array
+        - Then loop through this array to add back the textContent to each questionEls
 */
 
 /*-------------------------------- Constants --------------------------------*/
 
 const questionDirectory = [
+    // questions and answers are added to this array
+        // must be added in same format with question & category ID's and values lined up or will break
     // have to add categoryID and categoryName key / property pairs to existing object or it messes up the ID match in handleQuestionClick
     // only need to add categoryID and categoryName key / property pairs once because of the .find() method used to identify them 
     {categoryID: "category1", categoryName: "SNL Celebrity Jeopardy!",
      questionID: "column1-question1", clicked: false, value: "$100", question: "This barnyard animal says 'Moo'", answer: "What is a cow?"},
-    {questionID: "column1-question2", clicked: false, value: "$200", category: "SNL Celebrity Jeopardy!", question: "It comes out of your faucet, and you shower in it too.", answer: "What is water?"},
-    {questionID: "column1-question3", clicked: false, value: "$300", category: "SNL Celebrity Jeopardy!", question: "This color is the only one that ends in 'urple.'", answer: "What is purple?"},
-    {questionID: "column1-question4", clicked: false, value: "$400", category: "SNL Celebrity Jeopardy!", question: "This number comes after two", answer: "What is three?"},
-    {questionID: "column1-question5", clicked: false, value: "$500", category: "SNL Celebrity Jeopardy!", question: "She is married to your father", answer: "Who is your mother?"},
+    {questionID: "column1-question2", clicked: false, value: "$200", question: "It comes out of your faucet, and you shower in it too.", answer: "What is water?"},
+    {questionID: "column1-question3", clicked: false, value: "$300", question: "This color is the only one that ends in 'urple.'", answer: "What is purple?"},
+    {questionID: "column1-question4", clicked: false, value: "$400", question: "This number comes after two", answer: "What is three?"},
+    {questionID: "column1-question5", clicked: false, value: "$500", question: "She is married to your father", answer: "Who is your mother?"},
 
-    {categoryID: "category2", categoryName: "Food & Drink",
+    {categoryID: "category2", categoryName: "Bites & Beverages",
      questionID: "column2-question1", clicked: false, value: "$100", question: "This fruit keeps the doctor away if eaten once a day", answer: "What is an apple?"},
     {questionID: "column2-question2", clicked: false, value: "$200", question: "It's the Italian word for “ice cream.”", answer: "What is gelato?"},
-    {questionID: "column2-question3", clicked: false, value: "$300", question: "This legume is used to make hummus.", answer: "What are chickpeas?"},
+    {questionID: "column2-question3", clicked: false, value: "$300", question: "These legumes are used to make hummus.", answer: "What is are chickpeas?"},
     {questionID: "column2-question4", clicked: false, value: "$400", question: "This cocktail of vodka, tomato juice, and spices is often enjoyed at brunch.", answer: "What is a Bloody Mary?"},
     {questionID: "column2-question5", clicked: false, value: "$500", question: "This spice, sometimes called “red gold,” is the most expensive in the world by weight and comes from the stigma of a flower.", answer: "What is saffron?"},
     
@@ -65,7 +67,7 @@ let currentQuestion
 
 /*------------------------ Cached Element References ------------------------*/
 
-// Categories
+// Categories--------------------------------------------
 const categoryOne = document.getElementById("category1")
     // console.dir(categoryOne) returns element object
     const categoryOneTitle = questionDirectory.find((question) => { // finds the first instance of "category1"
@@ -79,51 +81,49 @@ const categoryTwo = document.getElementById("category2")
     })
     categoryTwo.textContent = categoryTwoTitle.categoryName
 
-// Questions
+// Questions--------------------------------------------
 const questionEls = document.querySelectorAll(".question")
-    console.dir(questionEls)
+    //console.dir(questionEls)
+ 
+// the questionEls directly does not have textContent, the elements within it do so you cannot just write questionEls.textContent like I did for the originalQuestion & Answer Display 
+const originalValuesDisplay = [] // need empty array to hold the textContents for all the questionEls
+
+questionEls.forEach((element) => { // add to this array with a forEach loop
+    originalValuesDisplay.push(element.textContent) // forEach can look at each elements textContent and then push it to my new array
+})
+//console.log(originalValuesDisplay) // confirming array populates with correct values
 
 const questionDisplay = document.getElementById("question-display")
-    console.dir(questionDisplay)
+    //console.dir(questionDisplay)
 
 const originalQuestionDisplay = questionDisplay.textContent
+    //console.dir(originalQuestionDisplay)
 
-// Answers
+// Answers--------------------------------------------
 const answerInput = document.getElementById("answer-input")
-   console.dir(answerInput)
+    //console.dir(answerInput)
+
+const originalInputPlaceholder = answerInput.placeholder
+    //console.dir(originalInputPlaceholder)
 
 const submitAnswer = document.getElementById("submit-answer-button") 
-    console.dir(submitAnswer)
+    //console.dir(submitAnswer)
 
 const answerDisplay = document.getElementById("answer-display")
-    console.dir(answerDisplay)
+    //console.dir(answerDisplay)
 
 const originalAnswerDisplay = answerDisplay.textContent
+    //console.dir(originalAnswerDisplay)
 
-// Score & Reset
+// Score & Reset--------------------------------------------
 const scoreDisplay = document.getElementById("score-display")
-    console.dir(scoreDisplay)
+    //console.dir(scoreDisplay)
 
 const resetButton = document.getElementById("reset")
-    console.dir(resetButton)
+    //console.dir(resetButton)
 
 
 /*-------------------------------- Functions --------------------------------*/
-
-const init = () => {
-    score = 0
-    currentQuestion = null
-    questionDirectory.forEach((question) => { // need to change all of the clicked properties back to false when restarting game
-        question.clicked = false
-    })
-    // console.log("Init works") // confirming that the function works before adding all of the display changes
-    questionDisplay.textContent = originalQuestionDisplay
-    answerDisplay.textContent = originalAnswerDisplay
-    scoreDisplay.textContent = 0
-    // NEED TO RESET BOARD // CREATE CACHED ELEMENTS FOR BOARD ALSO
-}
-// init()
-
 
 const clear = () => {
     answerDisplay.textContent = "" // starts out empty and everytime a quesiton is clicked it becomes empty
@@ -138,7 +138,7 @@ const handleQuestionClick = (event) => { // has to grab the id of the element an
     let boardID = event.target.id
     let IDmatch = questionDirectory.find((question) => {
         return question.questionID === boardID // returns the object where the target ID matches the question ID 
-        // quite proud of realizing that the easiest way to return the correct questin was to match the ID's for the elements and the question array
+        // quite proud of realizing that the easiest way to return the correct question was to match the ID's for the elements and the question array
     })
    //console.dir(IDmatch) // checking the correct object was returned
    if (IDmatch) { 
@@ -190,9 +190,9 @@ const updateGame = () => {
         questionEls[index].textContent = "-" // this should still work even with more question columns
         questionEls[index].removeEventListener("click",handleQuestionClick) // removes the handleQuestionClick event listener once the questionDirectory.clicked = true
         } else {
-        return
-    }
-})
+            return
+        }
+    })
 }
 
 const gameResult = () => {
@@ -211,6 +211,29 @@ const gameResult = () => {
     } else {
         return
     }
+}
+
+const init = () => {
+    score = 0
+    currentQuestion = null
+    submitAnswer.disabled = true // cant click submit answer button without clicking a question first
+    questionDirectory.forEach((question) => { // change all of the clicked properties in my questionDirectory back to false when restarting game
+        question.clicked = false
+    })
+    // console.log("Init works") // confirming that the function works before adding all of the display changes
+    questionDisplay.textContent = originalQuestionDisplay
+    answerDisplay.textContent = originalAnswerDisplay
+    answerInput.placeholder = originalInputPlaceholder
+    answerInput.value = ""
+    questionEls.textContent = originalValuesDisplay
+    scoreDisplay.textContent = 0
+    questionEls.forEach((element,index) => { // again forEach can access the textContent wihin the questionEls node
+        element.textContent = originalValuesDisplay[index] // but you need to cycle through each index of the originalValuesDisplay array to add the elements as the updated textContent one index at a time
+   })
+    questionEls.forEach((question) => {
+        question.addEventListener("click",handleQuestionClick) // since we removed the event handler in the updateGame function, we have to add it back
+        // when running init() or we wont be able to click any questions after restarting
+})
 }
 
 
