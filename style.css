@@ -35,14 +35,20 @@ input::placeholder {
 
 input, #submit-answer-button {
     margin: 20px;
-    font-size: 25px;
+    font-size: 24px;
 }
 
-#submit-answer-button {
+button {
     color: #060CE9 ;
     background-color: #ffcc00;
     border: 3px solid white;
-    font-size: 20px;
+    font-size: 16px;
+    width: 150px;
+    height: 50px;
+}
+
+#submit-answer-button {
+    font-size: 16px;
 }
 
 #question-display,
@@ -91,7 +97,7 @@ input, #submit-answer-button {
 }
 
 .score > h3 {
-    color: black;
+    color: white;
     font-size: 40px;
 }
 
@@ -120,11 +126,5 @@ footer {
     align-items: center;
     justify-content: center;
     margin: 10px;
-    font-size: 15px;
-    color: #060CE9 ;
-    background-color: #ffcc00;
-    border: 3px solid white;
-    width: 100px;
-    height: 50px;
 }
 

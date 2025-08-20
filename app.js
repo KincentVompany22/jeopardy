@@ -1,43 +1,55 @@
 /*
 
 User Story / Pseudo Code:
-- User clicks on a question in category
-    - Create an event handler function (handleQuestionClick) that displays the corresponding question from the questionDirectory array for that index
-    - target.id of the question squares match the questionID of the corresponding question
-- Question displays in display (id: questionDisplay)
-- User types in answer into input field and clicks submit answer (id: submitAnswer)
-    - Create another event handler function (handleSubmit) that displays the corresponding answer from the questionDirectory array for that index
-- After submit answer button is clicked (handleSubmit function is run), something will be shown in the answer display  (id: answerDisplay)
-    - Questions and Answers are kept within an array (questionDirectory)
-    - Upon clicking the submit answer button (id: submitAnswer), function will look into object to identify if user input matches correct answer property for that question
-- If inputted answer (value) === stored answer, then answer is correct and "That is correct!" is displayed in answerDisplay
-    - Add value of question (questionDirectory.value) to score
-- If inputted answer != stored answer, then answer is incorrect. State its incorrect and display correct answer.
-    - Subtract value of question (questionDirectory.value) from score
-        - In calculations, convert value of question to integer from string and remove $ to run calculation (parseInt & . replace)
-- Once score is added, attempted question textContent is removed from board to signal question has been clicked and game continues
-    - Make just answered question unclickable.
-    - Until next question is clicked, the previous question, answer, and inputted answer remain on screen
-        - Once next question is clicked, displays are cleared. Done so through the clear() function
-- Once all questions are answered (questionDirectory.clicked = true for all questions) then analyze current score
-    - Use the every() method to indentify that every questionDirectory.clicked = true
-    - If current score is positive - user wins!
-    - If current score is negative - user loses
-- User can play again by clicking Start Over Button (id reset)
-    - Runs init function to reset board, return all textContent to board
-    - since questionEls is a nodelist, cannot extract textContent
-        - Have to run a forEach to look for textContent for each element and return it to a new array
-        - Then loop through this array to add back the textContent to each questionEls
+
+1) User clicks on a question in category (function: handleQuestionClick() )
+    - on click, original display messaging (cached elements: questionDisplay & answerDisplay) are cleared (function: clear () )
+    - handleQuestionClick function searches for the target.id of the question clicked
+    - then searches array questionDirectory using the .find() method for any instance where target.id = questionID
+    - returns the object within the questionDirectory array where a match is found 
+        - saves that to variable currentQuestion to use for the handleAnswerClick() function
+    - then displays the question property associated with that matched object to the DOM for the user to see (cached element: questionDisplay)
+        - submit answer button (cached element: submitAnswer) is enabled to submit
+        - question square's style.color changes to signify current question being answered
+        - event listener for handleQuestionClick() function is removed so no other question can be selected
+    
+2) User submit answer (function: handleAnswerClick() ) 
+    - user types in answer into input field (cached element: answerInput) and clicks submit answer (cached element: submitAnswer)
+    - if answerInput.value = currentQuestion.answer (currentQuestion variable defined earlier in handleQuestionClick() function)
+        - answerDislay.textContent displays correct answer messaging
+        - user score is increased by value of question listed in questionDirectory array (currentQuestion.value)
+    - if answerInput.value != currentQuestion.answer
+        - answerDislay.textContent displays incorrect answer messaging
+        - user score is decreased by value of question listed in questionDirectory array 
+    - currentQuestion clicked property in questionDirectory is marked as clicked
+    - submit answer button is disabled again until another question is clicked
+    - event listener for handleQuestionClick() function is added back so next question can be selected
+
+3) Board is updated (function: updateGame() )
+    - using the forEach() method, questionDirectory is looped through to identify questions that have clicked property = true
+        - if clicked, then textContent of question element is replaced with a "-" to signify quesiton has been attempted
+        - event listener for handleQuestionClick() function is removed just for the attempted question so it can no longer be selected
+
+4) First three steps above are repeated until all questions have been attempted (function: gameResult() )
+    - Once every clicked property in the questionDirectory equals true (identified using the .every() method), score is assessed
+        - if score is positive, then display winner messaging
+        - if score is negative, then display loser messaging
+
+5) User can select reset button to play again / start over (function: init() )
+    - sets score back to 0
+    - sets the currentQuestion selected back to null
+    - sets all of the clicked properties in questionDirectory to false
+    - adds back the event listener for handleQuestionClick() function to all question elements
+    - submit answer button is disabled
+    - displays all initial game messaging
+        - question display 
+        - answer display
+        - input value & placeholder
+        - score display
+        - question element textContent and style.color (cached element: originalValuesDisplay)
+            - Since question elements returns a node list, cannot access textContent or style.color of elements directly
+            - so original question element textContent and style.color properties are pushed into originalValuesDisplay array to be used during init() function
 */
-
-
-// can probably add a feature that if you win, a new input box appears asking how much you would want to wager on final jeopardy
-// create a variable called wager and start it at 0 // also add a key property pair to your questionDirectory for a final jeopardy question
-// then after wager is made, display the final jeopardy question in the displayQuestion
-
-// after building final jeopardy, maybe you can use same functionality to add a daily double somewhere
-// add new property / key pair to all of the questions called dailyDouble. Set to true for the daily double and false for all of the others
-// if that question is selected, have wager box appear
 
 
 /*-------------------------------- Constants --------------------------------*/
@@ -62,19 +74,12 @@ const questionDirectory = [
     {questionID: "column2-question5", clicked: false, value: "$500", question: "This spice, sometimes called “red gold,” is the most expensive in the world by weight and comes from the stigma of a flower.", answer: "What is saffron?"},
 ]
 
-//const finalJeopardyDirectory = {category: "TEST CAT", question: "TEST QUE", answer: "TEST ANS"}
-
 // console.log(parseInt(questionDirectory[1].value.replace("$",""))) // this formula strips dollar sign from text to turn it into integer for calcs. Used below.
-
-
-
 
 /*-------------------------------- Variables --------------------------------*/
 
 let score = 0
 let currentQuestion
-let wager = 0
-
 
 /*------------------------ Cached Element References ------------------------*/
 
@@ -106,8 +111,6 @@ questionEls.forEach((element) => { // add to this array with a forEach loop
         })
 })
 //console.log(originalValuesDisplay) // confirming array populates with correct values
-
-
 
 const questionDisplay = document.getElementById("question-display")
     //console.dir(questionDisplay)
@@ -159,47 +162,15 @@ const handleQuestionClick = (event) => { // has to grab the id of the element an
    //console.dir(IDmatch) // checking the correct object was returned
     currentQuestion = IDmatch // storing the current object of the selected question so you can access the object properties later
     // console.dir(currentQuestion) // testing to see the currently selected object
-    questionDisplay.textContent = IDmatch.question // returns the question property of the object and displays it in questionDisplay!!
+    questionDisplay.textContent = currentQuestion.question // returns the question property of the object and displays it in questionDisplay!!
     submitAnswer.disabled = false // disabled property on the submitAnswer button is false (meaning its clickable) when the handleQuestionClick function is run
     let squareClicked = document.getElementById(boardID)
     squareClicked.style.color = "white" // changing question element dislay to white once clicked
     questionDirectory.forEach((question,index) => { // once a question is clicked, remove event listener from all questions so you are locked into the question, cant change it
         questionEls[index].removeEventListener("click",handleQuestionClick)
     })
-    
 }
    
-
-   //if (IDmatch.isDailyDouble === false) 
-        // This means you are able to click it
-   // } else if (IDmatch.isDailyDouble === true) {
-        // dailyDouble()
-   // } else {
-   //     return
-   // }
-
-
-/*
-const dailyDouble = () => {
-    const scoreDiv = document.querySelector(".score")
-    const wagerInputBox = document.createElement("input")
-    scoreDiv.appendChild(wagerInputBox)
-        wagerInputBox.placeholder = "Make your wager!"
-    const wagerSubmitBtn = document.createElement("button")
-    scoreDiv.appendChild(wagerSubmitBtn)
-
-    let wager = parseInt(wagerInputBox.value)
-    //wager = Math.max(0,score)
-
-    wagerSubmitBtn.addEventListener("click",console.log(wager))
-}
-*/
-
-// see if you can finish this
-// if you give up on this, remove the isDoubleJeopardy property from questionDirectory object
-
-
-
 const handleSubmit = (event) => {
     if (answerInput.value === currentQuestion.answer) { // grabbing the value which is what is typed in
         answerDisplay.textContent = " ✅ That is correct!" 
@@ -263,15 +234,7 @@ const gameResult = () => {
     }
 }
 
-//const finalJeopardy = () => {
-    // need to have input box appear to make wager
-    // once wager is submitted then questionDisplay.textContent = finalJeopardyDirectory.question
-    // once answer is inputted in input box, user clicks submit answer
-        // need to create new eventHandler / event listener called handleFinalJeopardySubmit
-    // checks if guessed answer = finalJeopardyDirectory.answer
-        // If yes, then score is increased by wager amount
-        // If no, then score is decreased by wager amount
-//}
+
 
 const init = () => {
     score = 0
@@ -307,3 +270,51 @@ submitAnswer.addEventListener("click",handleSubmit)
 
 resetButton.addEventListener("click",init)
 // in order for this to work need to incorporate updateGame into functionality
+
+
+/*----------------------------- Code Graveyard -----------------------------*/
+
+
+/*
+Attempted Daily Double Wager Functionality
+
+// conditional below placed in handleQuestionClick function
+ if (IDmatch.isDailyDouble === false) { // value inputted in questionDirectory object
+        return
+    } else if (IDmatch.isDailyDouble === true) {
+        dailyDouble()
+    }
+
+
+const dailyDouble = () => {
+    const scoreDiv = document.querySelector(".score")
+    const wagerInputBox = document.createElement("input")
+    scoreDiv.appendChild(wagerInputBox)
+        wagerInputBox.placeholder = "Make your wager!"
+    const wagerSubmitBtn = document.createElement("button")
+    wagerSubmitBtn.textContent = "Submit Wager"
+    scoreDiv.appendChild(wagerSubmitBtn)
+
+    let input = wagerInputBox.value
+    let wager = parseInt(input)
+
+    wagerSubmitBtn.addEventListener("click",console.log(wager))
+}
+*/
+
+/*
+Final Jeopardy Wager Psuedo Code
+
+const finalJeopardyDirectory = {category: "TEST CAT", question: "TEST QUE", answer: "TEST ANS"} 
+
+const finalJeopardy = () => {
+need to have input box appear to make wager
+once wager is submitted then questionDisplay.textContent = finalJeopardyDirectory.question
+once answer is inputted in input box, user clicks submit answer
+need to create new eventHandler / event listener called handleFinalJeopardySubmit
+checks if guessed answer = finalJeopardyDirectory.answer
+    If yes, then score is increased by wager amount
+    If no, then score is decreased by wager amount
+}
+
+*/
