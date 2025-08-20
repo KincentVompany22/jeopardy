@@ -1,10 +1,13 @@
 body{
-    background-color: lightgray;
+    background-color: #1F51FF;
+    text-align: center; /* aligns image in center */
+   
 }
 
-h1{
-    text-align: center;
-    color: #ffcc00;
+img{
+    width: 400px;
+    height: 200px;
+    margin-top: 20px;
 }
 
 header {
@@ -35,9 +38,17 @@ input, #submit-answer-button {
     font-size: 25px;
 }
 
+#submit-answer-button {
+    color: #060CE9 ;
+    background-color: #ffcc00;
+    border: 3px solid white;
+    font-size: 20px;
+}
+
 #question-display,
 #answer-display {
     height: 20px;
+    color: white;
 }
 
 .category-columns {
@@ -62,7 +73,7 @@ input, #submit-answer-button {
     width: 200px;
     height: 60px;
     text-align: center;
-    border: 2px solid white;
+    border: 3px solid white;
 }
 
 .category {
