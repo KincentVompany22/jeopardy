@@ -30,7 +30,7 @@ User Story / Pseudo Code:
         - if clicked, then textContent of question element is replaced with a "-" to signify quesiton has been attempted
         - event listener for handleQuestionClick() function is removed just for the attempted question so it can no longer be selected
 
-4) First three steps above are repeated until all questions have been attempted (function: gameResult() )
+4) First three steps above are repeated until all questions have been attempted (function: checkGameResult() )
     - Once every clicked property in the questionDirectory equals true (identified using the .every() method), score is assessed
         - if score is positive, then display winner messaging
         - if score is negative, then display loser messaging
@@ -56,9 +56,9 @@ User Story / Pseudo Code:
 
 const questionDirectory = [
     // questions and answers are added to this array
-        // must be added in same format with question & category ID's and values lined up or will break
-    // have to add categoryID and categoryName key / property pairs to existing object or it messes up the ID match in handleQuestionClick
-    // only need to add categoryID and categoryName key / property pairs once because of the .find() method used to identify them 
+        // must be added in same format with question & category ID's and values lined up.
+        // have to add categoryID and categoryName key / property pairs to existing object or it messes up the ID match in handleQuestionClick
+            // only need to add categoryID and categoryName key / property pairs once because of the .find() method used to identify them 
     {categoryID: "category1", categoryName: "SNL Celebrity Jeopardy!",
      questionID: "column1-question1", clicked: false, value: "$100", question: "This barnyard animal says 'Moo.'", answer: "What is a cow?"},
     {questionID: "column1-question2", clicked: false, value: "$200", question: "It comes out of your faucet, and you shower in it too.", answer: "What is water?"},
@@ -74,8 +74,6 @@ const questionDirectory = [
     {questionID: "column2-question5", clicked: false, value: "$500", question: "This spice, sometimes called “red gold,” is the most expensive in the world by weight and comes from the stigma of a flower.", answer: "What is saffron?"},
 ]
 
-// console.log(parseInt(questionDirectory[1].value.replace("$",""))) // this formula strips dollar sign from text to turn it into integer for calcs. Used below.
-
 /*-------------------------------- Variables --------------------------------*/
 
 let score = 0
@@ -84,11 +82,14 @@ let currentQuestion
 /*------------------------ Cached Element References ------------------------*/
 
 // Categories--------------------------------------------
+// must repeat steps within Categories section for all categories added
+
 const categoryOne = document.getElementById("category1")
-    // console.dir(categoryOne) returns element object
+    // console.dir(categoryOne) // returns element object
     const categoryOneTitle = questionDirectory.find((question) => { // finds the first instance of "category1"
         return question.categoryID === "category1"
-    }) // console.dir(categoryOneTitle)// returns the category 1 object to pull category name from
+    }) 
+    // console.dir(categoryOneTitle) // returns the category1 object to pull category name from
     categoryOne.textContent = categoryOneTitle.categoryName
     
 const categoryTwo = document.getElementById("category2")
@@ -98,27 +99,30 @@ const categoryTwo = document.getElementById("category2")
     categoryTwo.textContent = categoryTwoTitle.categoryName
 
 // Questions--------------------------------------------
-const questionEls = document.querySelectorAll(".question")
-    //console.dir(questionEls)
- 
-// the questionEls directly does not have textContent, the elements within it do so you cannot just write questionEls.textContent like I did for the originalQuestion & Answer Display 
-const originalValuesDisplay = [] // need empty array to hold the textContents and color.style for all the questionEls
 
-questionEls.forEach((element) => { // add to this array with a forEach loop
+const questionEls = document.querySelectorAll(".question")
+    // console.dir(questionEls) // returns questiionEls node list
+ 
+const originalValuesDisplay = []
+    // cannot access questionEls textContent directly as it is node list
+    // need empty array to hold textContent and color.style for all the questionEls elements
+
+questionEls.forEach((element) => { // forEach can look at each elements properties and then push them to object array originalValuesDisplay
     originalValuesDisplay.push({
-        text: element.textContent, // forEach can look at each elements textContent and then push it to my new object array
-        color: element.style.color // also forEach can look at each elements style.color and then push it to my new object array
+        text: element.textContent, // pushing textContent
+        color: element.style.color // pushing style.color
         })
 })
-//console.log(originalValuesDisplay) // confirming array populates with correct values
+    // console.log(originalValuesDisplay) // confirming array populates with correct property values
 
 const questionDisplay = document.getElementById("question-display")
     //console.dir(questionDisplay)
 
 const originalQuestionDisplay = questionDisplay.textContent
-    //console.dir(originalQuestionDisplay)
+    // console.dir(originalQuestionDisplay)
 
 // Answers--------------------------------------------
+
 const answerInput = document.getElementById("answer-input")
     //console.dir(answerInput)
 
@@ -135,128 +139,139 @@ const originalAnswerDisplay = answerDisplay.textContent
     //console.dir(originalAnswerDisplay)
 
 // Score & Reset--------------------------------------------
+
 const scoreDisplay = document.getElementById("score-display")
     //console.dir(scoreDisplay)
 
 const resetButton = document.getElementById("reset")
     //console.dir(resetButton)
 
-
 /*-------------------------------- Functions --------------------------------*/
 
-const clear = () => {
-    answerDisplay.textContent = "" // starts out empty and everytime a quesiton is clicked it becomes empty
-    answerInput.value = "" // starts out empty and everytime a question is clicked it becomes empty
+const clear = () => { // properties start empty & everytime a quesiton is clicked become empty
+    
+    answerDisplay.textContent = "" 
+    answerInput.value = "" 
 
-    // need to add functionality that when you click a question you cannot click another question until you click the submit asnwer button
 }
 
-const handleQuestionClick = (event) => { // has to grab the id of the element and match it to the id of the questionDirectory to pull out the correct question
-   // console.dir(event.target.id) // grabbing correct ID from click
-    clear() // clears the board of the previous answer and input value when new question is clicked
+const handleQuestionClick = (event) => { 
+
+    clear()
+
     let boardID = event.target.id
+        // console.dir(event.target.id) // grabbing correct element ID from click
     let IDmatch = questionDirectory.find((question) => {
-        return question.questionID === boardID // returns the object where the target ID matches the question ID 
+        return question.questionID === boardID // return object inside questionDirectory array where target.id matches questionID 
         // quite proud of realizing that the easiest way to return the correct question was to match the ID's for the elements and the question array
     })
-   //console.dir(IDmatch) // checking the correct object was returned
-    currentQuestion = IDmatch // storing the current object of the selected question so you can access the object properties later
-    // console.dir(currentQuestion) // testing to see the currently selected object
-    questionDisplay.textContent = currentQuestion.question // returns the question property of the object and displays it in questionDisplay!!
-    submitAnswer.disabled = false // disabled property on the submitAnswer button is false (meaning its clickable) when the handleQuestionClick function is run
+        //console.dir(IDmatch) // checking correct object is returned
+
+    currentQuestion = IDmatch // storing selected question object to access later
+    questionDisplay.textContent = currentQuestion.question
+    submitAnswer.disabled = false
+
     let squareClicked = document.getElementById(boardID)
-    squareClicked.style.color = "white" // changing question element dislay to white once clicked
-    questionDirectory.forEach((question,index) => { // once a question is clicked, remove event listener from all questions so you are locked into the question, cant change it
+    squareClicked.style.color = "white" // changing question element dislay once clicked to signify question selected
+    questionDirectory.forEach((question,index) => { // remove event listener from all question elements so user cannot select another during answer
         questionEls[index].removeEventListener("click",handleQuestionClick)
     })
+
 }
    
 const handleSubmit = (event) => {
-    if (answerInput.value === currentQuestion.answer) { // grabbing the value which is what is typed in
+
+    if (answerInput.value === currentQuestion.answer) { // referencing currentQuestion defined in handleQuestionClick()
         answerDisplay.textContent = " ✅ That is correct!" 
-        score = score + parseInt(currentQuestion.value.replace("$","")) // stripping $ so that math can be performed
-        // console.log(score) // just checking the math is working
+        score = score + parseInt(currentQuestion.value.replace("$","")) // .replace() strips "$" so score can be calculated
+        // console.log(score) // checking math is working for correct answer
     } else {
         answerDisplay.textContent = `❌ I'm sorry, but no. We were looking for "${currentQuestion.answer}"`
         score = score - parseInt(currentQuestion.value.replace("$",""))
-        // console.log(score) // just checking the math is working
+        // console.log(score) // checking math is working for incorrect answer
     }
+
+    currentQuestion.clicked = true 
+        // adjusting clicked property in current question object of questionDisplay array 
+        // used to determine when the game is over in checkGameResult()
+        // console.dir(currentQuestion) // checking to see if clicked propery updates
+
     scoreDisplay.textContent = score
-    currentQuestion.clicked = true // setting this to true so that I can assess which squares are not clickable anymore
-    // will be used to determine when the game is over as well gameResult()
+    submitAnswer.disabled = true // ensures user cannot click submit again without selecting next question
 
-    submitAnswer.disabled = true // Then once the handleSubmit function is run, disabled turns to true so you cannot click the submit button again
-    // until you run the handleQuestionClick function (click another question!)
-
-    // console.dir(currentQuestion) // checking to see if clicked turns to true once submit answer button is clicked
-    // look into styling this all above
-
-    questionDirectory.forEach((question,index) => { // once you click submit, I add back the event listener so that you can click the next question
-        questionEls[index].addEventListener("click",handleQuestionClick) // but then remove it only from the questions whose clicked property = true in the updateGame() function so you cant click it again later
+    questionDirectory.forEach((question,index) => { 
+        questionEls[index].addEventListener("click",handleQuestionClick) // add back event listener to all question elements so user can click next question
     })
 
+    updateGame()
 
-    // need to add functionality here that once the submit button is clicked, you have to click another question before clicking the button again
-    // right now if you click submit twice in a row it will adjust your score again
-   updateGame()
-   gameResult() // check if the game is over after every answer submission
+    checkGameResult()
 
-   // can probably break out the scoring mechanics into its own function and call it here to clean up the handleSubmit function 
 }
 
-
 const updateGame = () => {
-    questionDirectory.forEach((question,index) => { // looping through the questionDirectory array
-    if (question.clicked === true) { // which happens once we click submit answer button - line 128
-        questionEls[index].textContent = "-" // this should still work even with more question columns
-        questionEls[index].removeEventListener("click",handleQuestionClick) // removes the handleQuestionClick event listener once the questionDirectory.clicked = true
+
+    questionDirectory.forEach((question,index) => { 
+        if (question.clicked === true) {
+            questionEls[index].textContent = "-"
+            questionEls[index].removeEventListener("click",handleQuestionClick) // removes the handleQuestionClick event listener from just the answered questions
         } else {
             return
         }
     })
+
 }
 
-const gameResult = () => {
+const checkGameResult = () => {
+
     if (questionDirectory.every((question) => {
-        return question.clicked === true
-    }) && score > 0) {
-        questionDisplay.textContent = "Congratulations, you are a Jeopardy champion! 🏆"
-        answerDisplay.textContent = `You're going home with $${score}!`
-        // finalJeopardy()
+        return question.clicked === true }) 
+        &&
+        score > 0) {
+            questionDisplay.textContent = "Congratulations, you are a Jeopardy champion! 🏆"
+            answerDisplay.textContent = `You're going home with $${score}!`
+            resetButton.textContent = "Play again?"
+        
     } else if (questionDirectory.every((question) => {
-        return question.clicked === true
-    }) && score < 0) {
-        questionDisplay.textContent = "Sorry, you lost."
-        answerDisplay.textContent = "Click the button below to try again!"
-        resetButton.textContent = "Play again?"
+        return question.clicked === true}) 
+        && score < 0) {
+            questionDisplay.textContent = "Sorry, you lost."
+            answerDisplay.textContent = "Click the button below to try again!"
+            resetButton.textContent = "Play again?"
+
     } else {
         return
     }
+
 }
 
-
-
 const init = () => {
+
     score = 0
     currentQuestion = null
-    submitAnswer.disabled = true // cant click submit answer button without clicking a question first
-    questionDirectory.forEach((question) => { // change all of the clicked properties in my questionDirectory back to false when restarting game
+
+    submitAnswer.disabled = true
+    questionDirectory.forEach((question) => { 
         question.clicked = false
     })
-    // console.log("Init works") // confirming that the function works before adding all of the display changes
+        // console.log("Init works") // confirming init() function works before adding all of display changes
+
     questionDisplay.textContent = originalQuestionDisplay
     answerDisplay.textContent = originalAnswerDisplay
     answerInput.placeholder = originalInputPlaceholder
     answerInput.value = ""
     scoreDisplay.textContent = 0
+
     questionEls.forEach((element,index) => { // again forEach can access the properties wihin the questionEls node
-        element.textContent = originalValuesDisplay[index].text // cycle through each index of the originalValuesDisplay array to add the textContent stored in the 'text' key of my object array originalValueDisplay
-        element.style.color = originalValuesDisplay[index].color // cycle through each index of the originalValuesDisplay array to add the stye.color stored in the 'color' key of my object array originalValueDisplay
+        element.textContent = originalValuesDisplay[index].text // cycle through each index of originalValuesDisplay array to add textContent property stored in 'text' key
+        element.style.color = originalValuesDisplay[index].color // cycle through each index of originalValuesDisplay array to add stye.color property stored in 'color' key
     })
+
     questionEls.forEach((question) => {
-        question.addEventListener("click",handleQuestionClick) // since we removed the event handler in the updateGame function, we have to add it back
-        // when running init() or we wont be able to click any questions after restarting
-})
+        question.addEventListener("click",handleQuestionClick) // add back event listener to each question element
+        
+    })
+
 }
 
 /*----------------------------- Event Listeners -----------------------------*/
@@ -267,17 +282,13 @@ questionEls.forEach((question) => {
 
 submitAnswer.addEventListener("click",handleSubmit)
 
-
 resetButton.addEventListener("click",init)
-// in order for this to work need to incorporate updateGame into functionality
-
 
 /*----------------------------- Code Graveyard -----------------------------*/
 
+// Attempted Daily Double Wager Functionality
 
 /*
-Attempted Daily Double Wager Functionality
-
 // conditional below placed in handleQuestionClick function
  if (IDmatch.isDailyDouble === false) { // value inputted in questionDirectory object
         return
@@ -302,9 +313,10 @@ const dailyDouble = () => {
 }
 */
 
-/*
-Final Jeopardy Wager Psuedo Code
 
+// Final Jeopardy Wager Psuedo Code
+
+/*
 const finalJeopardyDirectory = {category: "TEST CAT", question: "TEST QUE", answer: "TEST ANS"} 
 
 const finalJeopardy = () => {
