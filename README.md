@@ -40,4 +40,4 @@ Throughout this project, I made slight use of generative AI sites, such as chatG
 - **Final Jeopardy**: Add the ability to place a wager and answer one final question if they end the game with a positive score.
 - **Dynamic Categories**: Allow categories and questions to be randomly selected from a larger question bank, so the board is different each playthrough.
 - **Multiplayer Support**: Enable multiple players to take turns answering questions, more closely mimicking the real Jeopardy! format.
-- **Time Limit Feature**: Add an answer time limit when each question is clicked, more closely mimicking the real Jeopardy! format.
+- **Time Limit Feature**: Add an answer time limit when each question is clicked, more closely mimicking the real Jeopardy! format.v

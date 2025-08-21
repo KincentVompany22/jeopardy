@@ -41,6 +41,7 @@ User Story / Pseudo Code:
     - sets all of the clicked properties in questionDirectory to false
     - adds back event listener for handleQuestionClick() function to all question elements
     - submit answer button is disabled
+    - Winner / loser messaging is removed (gameResultText.remove() )
     - displays all initial game messaging
         - question display 
         - answer display
@@ -49,6 +50,7 @@ User Story / Pseudo Code:
         - question element textContent and style.color (cached element: originalValuesDisplay)
             - since question elements returns node list, cannot access textContent or style.color of elements directly
             - so original question element textContent and style.color properties are pushed into originalValuesDisplay array to be used during init() function
+        - 
 */
 
 
@@ -275,7 +277,7 @@ const checkGameResult = () => {
         return question.clicked === true}) 
         && score < 0) {
             gameResultHeader.prepend(gameResultText)
-            gameResultText.textContent = `👎 Sorry, you lost. Click the button at the bottom to play again!`
+            gameResultText.textContent = `👎 Sorry, you lost and owe $${Math.abs(score)}. Click the button at the bottom to play again!`
             gameResultText.style.color = "#ffcc00"
             resetButton.textContent = "Play again?"
 
