@@ -37,7 +37,7 @@ Throughout this project, I made slight use of generative AI sites, such as chatG
 ## Next Steps & Planned Future Enhancements
 
 - **Daily Double**: Add a question that allows players to wager any portion of their score when selected. 
-- **Final Jeopardy**: Add the ability to place a wager and answer one final question if they end the game with a positive score.
+- **Final Jeopardy**: Add the ability to place a wager and answer one final question if you end the game with a positive score.
 - **Dynamic Categories**: Allow categories and questions to be randomly selected from a larger question bank, so the board is different each playthrough.
 - **Multiplayer Support**: Enable multiple players to take turns answering questions, more closely mimicking the real Jeopardy! format.
-- **Time Limit Feature**: Add an answer time limit when each question is clicked, more closely mimicking the real Jeopardy! format.v
+- **Time Limit Feature**: Add an answer time limit when each question is clicked, more closely mimicking the real Jeopardy! format.
