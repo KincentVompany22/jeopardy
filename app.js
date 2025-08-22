@@ -50,7 +50,6 @@ User Story / Pseudo Code:
         - question element textContent and style.color (cached element: originalValuesDisplay)
             - since question elements returns node list, cannot access textContent or style.color of elements directly
             - so original question element textContent and style.color properties are pushed into originalValuesDisplay array to be used during init() function
-        - 
 */
 
 
@@ -197,7 +196,6 @@ const handleQuestionClick = (event) => {
         // console.dir(event.target.id) // grabbing correct element ID from click
     let IDmatch = questionDirectory.find((question) => {
         return question.questionID === boardID // return object inside questionDirectory array where target.id matches questionID 
-        // quite proud of realizing that the easiest way to return the correct question was to match the ID's for the elements and the question array
     })
         //console.dir(IDmatch) // checking correct object is returned
 
@@ -232,7 +230,7 @@ const handleSubmit = (event) => {
         // console.dir(currentQuestion) // checking to see if clicked property updates
 
     if (score < 0) { // score formatting
-        scoreDisplay.textContent = `-$${Math.abs(score)}` // if negative, use Math.abs() method to extract absolute value of score 
+        scoreDisplay.textContent = `-$${Math.abs(score)}` // if negative, use Math.abs() method to extract absolute value of score for dollar formatting
     } else {
         scoreDisplay.textContent = `$${score}` // if positive, just display score as is
     }
